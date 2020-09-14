@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GhostWorkspace
 {
-    class Settings
+    public class Settings
     {
         public bool GhostShift = false;
         public bool GhostCtrl = false;

@@ -14,8 +14,10 @@ namespace GhostWorkspace
 {
     public partial class UI : Form
     {
-        private Settings settings;
-        private string[] applications;
+        public static Settings Settings;
+        private List<string> applications;
+
+        private Rectangle mainScreen = Screen.PrimaryScreen.Bounds;
 
         protected override CreateParams CreateParams
         {
@@ -33,7 +35,7 @@ namespace GhostWorkspace
             {
                 var sw = new StreamWriter("settings.json");
                 var s = JsonSerializer.Create();
-                s.Serialize(sw, this.settings);
+                s.Serialize(sw, Settings);
                 sw.Close();
 
                 sw = new StreamWriter("applications.json");
@@ -41,25 +43,40 @@ namespace GhostWorkspace
                 sw.Close();
             }
 
-            this.settings = 
+            var sr = new StreamReader("settings.json");
+            var data = sr.ReadToEnd();
+            Settings = JsonConvert.DeserializeObject<Settings>(data);
+            sr.Close();
+
+            sr = new StreamReader("applications.json");
+            data = sr.ReadToEnd();
+            this.applications = JsonConvert.DeserializeObject<List<string>>(data);
+            sr.Close();
+        }
+
+        public void CreateSidePanel()
+        {
+            SidePanel panel = new SidePanel() { Width = 50, Height = this.applications.Count * 40 + 1 };
+            panel.Top = (this.mainScreen.Height - panel.Height) / 2;
+
+            this.Controls.Add(panel);
+
         }
 
         public UI()
         {
-            Rectangle sc = Screen.PrimaryScreen.Bounds;
-
             InitializeComponent();
 
-            this.settings = new Settings();
+            Settings = new Settings();
 
             this.FormBorderStyle = FormBorderStyle.None;
-            this.Width = sc.Width;
-            this.Height = sc.Height;
+            this.Width = this.mainScreen.Width;
+            this.Height = this.mainScreen.Height;
             this.BackColor = Color.Bisque;
             this.TransparencyKey = Color.Bisque;
 
             CheckSavings();
-            //CreateSidePanel();
+            CreateSidePanel();
         }
     }
 }

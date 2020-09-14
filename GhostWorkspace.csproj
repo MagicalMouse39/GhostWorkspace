@@ -50,6 +50,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Settings.cs" />
+    <Compile Include="SidePanel.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="UI.cs">
       <SubType>Form</SubType>
     </Compile>
