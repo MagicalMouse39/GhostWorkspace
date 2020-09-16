@@ -136,6 +136,7 @@ namespace GhostWorkspace
             Button settingsButton = new Button() { Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = 10, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.SettingsIcon };
             settingsButton.Click += (s, e) =>
             {
+                if (this.Left < 0)
                 this.AnimatePanel(Animation.In);
                 settingsUI.ShowDialog();
             };
