@@ -20,8 +20,10 @@ namespace GhostWorkspace
     public partial class PanelUI : Form
     {
         public static Settings Settings;
-        private List<string> applications;
+        public static List<string> Applications;
+
         private SettingsUI settingsUI;
+        private AddAppUI addAppUI;
 
         private bool animating = false;
         private bool anIn = false;
@@ -40,6 +42,18 @@ namespace GhostWorkspace
             }
         }
         */
+
+        public static void SaveChanges()
+        {
+            var sw = new StreamWriter("settings.json");
+            var s = JsonSerializer.Create();
+            s.Serialize(sw, Settings);
+            sw.Close();
+
+            sw = new StreamWriter("applications.json");
+            s.Serialize(sw, Applications.ToArray<string>());
+            sw.Close();
+        }
 
         public void CheckSavings()
         {
@@ -62,7 +76,7 @@ namespace GhostWorkspace
 
             sr = new StreamReader("applications.json");
             data = sr.ReadToEnd();
-            this.applications = JsonConvert.DeserializeObject<List<string>>(data);
+            applications = JsonConvert.DeserializeObject<List<string>>(data);
             sr.Close();
         }
 
@@ -116,15 +130,17 @@ namespace GhostWorkspace
             InitializeComponent();
 
             Settings = new Settings();
+            Applications = new List<string>();
 
             this.settingsUI = new SettingsUI();
+            this.addAppUI = new AddAppUI();
 
             CheckSavings();
 
             this.FormBorderStyle = FormBorderStyle.None;
             
             this.Width = 100;
-            this.Height = (this.applications.Count + 1) * 100;
+            this.Height = (applications.Count + 2) * 95;
             this.Top = (this.mainScreen.Height - this.Height) / 2;
             this.Left = 20;
             this.StartPosition = FormStartPosition.Manual;
@@ -132,15 +148,19 @@ namespace GhostWorkspace
             this.BackColor = Settings.SidePanelBG;
             this.Opacity = Settings.SidePanelAlpha;
 
-            #region SettingsButton
+            #region SettingButtons
             Button settingsButton = new Button() { Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = 10, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.SettingsIcon };
             settingsButton.Click += (s, e) =>
             {
                 if (this.Left < 0)
-                this.AnimatePanel(Animation.In);
+                    this.AnimatePanel(Animation.In);
+                
                 settingsUI.ShowDialog();
             };
+            Button addAppButton = new Button() { Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = 100, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.PlusIcon };
+            addAppButton.Click += (s, e) => addAppUI.ShowDialog();
             this.Controls.Add(settingsButton);
+            this.Controls.Add(addAppButton);
             #endregion
 
             this.SetStyle(ControlStyles.UserPaint, true);

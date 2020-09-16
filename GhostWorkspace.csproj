@@ -49,6 +49,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AddAppUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AddAppUI.Designer.cs">
+      <DependentUpon>AddAppUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="InteropUtils.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsUI.cs">
@@ -100,6 +106,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\settingsIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\PlusIcon.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

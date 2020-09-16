@@ -63,6 +63,16 @@ namespace GhostWorkspace.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap PlusIcon {
+            get {
+                object obj = ResourceManager.GetObject("PlusIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap SettingsIcon {
             get {
                 object obj = ResourceManager.GetObject("SettingsIcon", resourceCulture);
