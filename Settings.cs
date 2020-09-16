@@ -14,6 +14,7 @@ namespace GhostWorkspace
         public bool GhostAlt = true;
         public char GhostKey = 'h';
 
-        public Color SidePanelBG = Color.FromArgb(10, Color.OrangeRed);
+        public Color SidePanelBG = Color.OrangeRed;
+        public float SidePanelAlpha = .90f;
     }
 }

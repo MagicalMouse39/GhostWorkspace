@@ -14,15 +14,16 @@ namespace GhostWorkspace
 
         public SidePanel()
         {
-            this.color = UI.Settings.SidePanelBG;
+            this.color = PanelUI.Settings.SidePanelBG;
 
-            this.Dock = DockStyle.Left;
+            //this.Dock = DockStyle.Left;
             this.BackColor = this.color;
+            this.BorderStyle = BorderStyle.None;
+            this.Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
         }
 
         protected override void OnPaint(PaintEventArgs e)
         {
-            e.Graphics.DrawEllipse(new Pen(this.color), new Rectangle(this.Left, this.Top, this.Width, this.Height));
             base.OnPaint(e);
         }
     }

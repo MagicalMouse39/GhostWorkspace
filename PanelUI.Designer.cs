@@ -1,6 +1,6 @@
 ﻿namespace GhostWorkspace
 {
-    partial class UI
+    partial class PanelUI
     {
         /// <summary>
         /// Variabile di progettazione necessaria.
