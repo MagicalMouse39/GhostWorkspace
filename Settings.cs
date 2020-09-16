@@ -16,5 +16,8 @@ namespace GhostWorkspace
 
         public Color SidePanelBG = Color.OrangeRed;
         public float SidePanelAlpha = .90f;
+
+        public Color SettingsBG = Color.OrangeRed;
+        public float SettingsAlpha = .80f;
     }
 }

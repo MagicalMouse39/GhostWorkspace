@@ -21,7 +21,7 @@ namespace GhostWorkspace
     {
         public static Settings Settings;
         private List<string> applications;
-        private SettingsUI settingsUI = new SettingsUI();
+        private SettingsUI settingsUI;
 
         private bool animating = false;
         private bool anIn = false;
@@ -116,6 +116,8 @@ namespace GhostWorkspace
             InitializeComponent();
 
             Settings = new Settings();
+
+            this.settingsUI = new SettingsUI();
 
             CheckSavings();
 
