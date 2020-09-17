@@ -25,7 +25,6 @@ namespace GhostWorkspace
         private SettingsUI settingsUI;
         private AddAppUI addAppUI;
         private ProcessManager processManager;
-        private Task processManagerTask;
 
         private bool animating = false;
         private bool anIn = false;
@@ -70,6 +69,15 @@ namespace GhostWorkspace
             data = sr.ReadToEnd();
             Applications = JsonConvert.DeserializeObject<List<string>>(data);
             sr.Close();
+        }
+
+        public static void ChangeGhostKey() =>
+                PanelUI.ChangeGhostKey((PanelUI.Settings.GhostAlt ? 1 : 0) + (PanelUI.Settings.GhostCtrl ? 2 : 0) + (PanelUI.Settings.GhostShift ? 4 : 0), PanelUI.Settings.GhostKey);
+
+        public static void ChangeGhostKey(int Special, int Key)
+        {
+            UnregisterHotKey(PanelUI.instance.Handle, 1);
+            RegisterHotKey(PanelUI.instance.Handle, 1, Special, Key);
         }
 
         private void AnimatePanel(Animation an)
@@ -187,7 +195,7 @@ namespace GhostWorkspace
             Settings = new Settings();
             Applications = new List<string>();
 
-            InteropUtils.RegisterHotKey(this.Handle, 1, (Settings.GhostAlt ? 1 : 0) + (Settings.GhostCtrl ? 2 : 0) + (Settings.GhostShift ? 4 : 0), (int)Settings.GhostKey);
+            InteropUtils.RegisterHotKey(this.Handle, 1, (Settings.GhostAlt ? 1 : 0) + (Settings.GhostCtrl ? 2 : 0) + (Settings.GhostShift ? 4 : 0), Settings.GhostKey);
 
             this.settingsUI = new SettingsUI();
             this.addAppUI = new AddAppUI();

@@ -15,15 +15,6 @@ namespace GhostWorkspace
         [STAThread]
         static void Main()
         {
-            Task.Factory.StartNew(() =>
-            {
-                Thread.Sleep(100);
-                while (!PanelUI.instance.IsDisposed)
-                {
-
-                }
-            });
-
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new PanelUI());

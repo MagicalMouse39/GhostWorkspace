@@ -51,7 +51,7 @@ namespace GhostWorkspace
         [DllImport("user32.dll")]
         public static extern int ShowWindow(int hwnd, int nCmdShow);
 
-        [DllImport("user32.DLL")]
+        [DllImport("user32.dll")]
         public static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }

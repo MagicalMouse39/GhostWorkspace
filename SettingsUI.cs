@@ -78,6 +78,7 @@ namespace GhostWorkspace
             this.UpdateKeyModifiers();
 
             PanelUI.SaveChanges();
+            PanelUI.ChangeGhostKey();
 
             input.Text = PanelUI.Settings.GhostKey + "";
         }
@@ -117,18 +118,21 @@ namespace GhostWorkspace
             {
                 PanelUI.Settings.GhostShift = this.ghostShiftCheck.Checked;
                 PanelUI.SaveChanges();
+                PanelUI.ChangeGhostKey();
             };
             
             this.ghostCtrlCheck.CheckedChanged += (s, e) =>
             {
                 PanelUI.Settings.GhostCtrl = this.ghostCtrlCheck.Checked;
                 PanelUI.SaveChanges();
+                PanelUI.ChangeGhostKey();
             };
 
             this.ghostAltCheck.CheckedChanged += (s, e) =>
             {
                 PanelUI.Settings.GhostAlt = this.ghostAltCheck.Checked;
                 PanelUI.SaveChanges();
+                PanelUI.ChangeGhostKey();
             };
 
             ghostKeyBox.Controls.Add(this.ghostShiftCheck);
