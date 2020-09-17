@@ -88,6 +88,10 @@ namespace GhostWorkspace
             title.Left = (this.Width - title.Width) / 2;
             this.Controls.Add(title);
 
+            Button closeBtn = new Button() { Top = 3, BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.CloseBtnIcon, Left = this.Width - 33, Width = 30, Height = 30, FlatStyle = FlatStyle.Flat, ForeColor = PanelUI.Settings.SettingsBG };
+            closeBtn.Click += (s, e) => this.Close();
+            this.Controls.Add(closeBtn);
+
             GroupBox ghostKeyBox = new GroupBox() { Text = "Ghosting Key Combo", Top = 60, Width = 170 };
             ghostKeyBox.Left = (this.Width - ghostKeyBox.Width) / 2;
 

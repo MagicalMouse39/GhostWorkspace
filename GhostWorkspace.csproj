@@ -115,5 +115,14 @@
   <ItemGroup>
     <None Include="Resources\ExitIcon.png" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="buttons\CloseBtnIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="buttons\MinimizeBtnIcon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="buttons\MaximizeBtnIcon.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -63,9 +63,39 @@ namespace GhostWorkspace.Properties {
         /// <summary>
         ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap CloseBtnIcon {
+            get {
+                object obj = ResourceManager.GetObject("CloseBtnIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap ExitIcon {
             get {
                 object obj = ResourceManager.GetObject("ExitIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MaximizeBtnIcon {
+            get {
+                object obj = ResourceManager.GetObject("MaximizeBtnIcon", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Cerca una risorsa localizzata di tipo System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap MinimizeBtnIcon {
+            get {
+                object obj = ResourceManager.GetObject("MinimizeBtnIcon", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
