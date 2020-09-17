@@ -28,7 +28,7 @@ namespace GhostWorkspace
         private CheckBox ghostShiftCheck, ghostCtrlCheck, ghostAltCheck;
 
         private void AnimatePopup(bool visible)
-        {
+        {   
             Task.Factory.StartNew(() =>
             {
                 Rectangle screen = Screen.PrimaryScreen.Bounds;
@@ -77,12 +77,114 @@ namespace GhostWorkspace
 
             this.UpdateKeyModifiers();
 
+            PanelUI.SaveChanges();
+
             input.Text = PanelUI.Settings.GhostKey + "";
+        }
+
+        private void AddComponents()
+        {
+            Label title = new Label() { Text = "Settings", Font = new Font("Bahnschrift SemiBold", 20F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))), Top = 10, Height = 40, Width = 130 };
+            title.Left = (this.Width - title.Width) / 2;
+            this.Controls.Add(title);
+
+            GroupBox ghostKeyBox = new GroupBox() { Text = "Ghosting Key Combo", Top = 60, Width = 170 };
+            ghostKeyBox.Left = (this.Width - ghostKeyBox.Width) / 2;
+
+            Label ghostKeyLabel = new Label() { Text = "Key:", Top = 22, Left = 10, Width = 30 };
+            ghostKeyBox.Controls.Add(ghostKeyLabel);
+            Button ghostKeyInput = new Button() { Text = PanelUI.Settings.GhostKey + "", Top = 20, Left = 60 };
+            ghostKeyInput.Click += (s, e) =>
+            {
+                if (this.waitingForKey)
+                    return;
+
+                this.waitingForKey = true;
+
+                ghostKeyInput.Text = "...";
+            };
+            ghostKeyBox.Controls.Add(ghostKeyInput);
+
+            this.ghostShiftCheck = new CheckBox() { Text = "Shift", Top = 50, Left = 10, Width = 50, Checked = PanelUI.Settings.GhostShift };
+            this.ghostCtrlCheck = new CheckBox() { Text = "Ctrl", Top = 50, Left = 70, Width = 50, Checked = PanelUI.Settings.GhostCtrl };
+            this.ghostAltCheck = new CheckBox() { Text = "Alt", Top = 50, Left = 120, Width = 40, Checked = PanelUI.Settings.GhostAlt };
+
+            ghostKeyBox.Controls.Add(this.ghostShiftCheck);
+            ghostKeyBox.Controls.Add(this.ghostCtrlCheck);
+            ghostKeyBox.Controls.Add(this.ghostAltCheck);
+
+            this.Controls.Add(ghostKeyBox);
+
+            ghostKeyInput.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
+            ghostKeyBox.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
+            this.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
+
+            title.MouseDown += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                }
+            };
+
+            Button sidePanelBGBtn = new Button() { Text = "Side Panel BG", BackColor = PanelUI.Settings.SidePanelBG, Width = 170, Top = 180, Left = (this.Width - 170) / 2, FlatStyle = FlatStyle.Flat, Height = 30 };
+            sidePanelBGBtn.Click += (s, e) =>
+            {
+                var cd = new ColorDialog() { Color = PanelUI.Settings.SidePanelBG };
+
+                if (cd.ShowDialog() == DialogResult.OK)
+                {
+                    PanelUI.Settings.SidePanelBG = cd.Color;
+                    PanelUI.SaveChanges();
+                    sidePanelBGBtn.BackColor = cd.Color;
+                    PanelUI.instance.UpdateColors();
+                }
+            };
+
+            TrackBar sidePanelAlphaBar = new TrackBar() { Width = 170, Maximum = 255, Minimum = 1, Left = (this.Width - 170) / 2, Top = 220, Value = (int)(PanelUI.Settings.SidePanelAlpha * 255) };
+            sidePanelAlphaBar.ValueChanged += (s, e) =>
+            {
+                PanelUI.Settings.SidePanelAlpha = (sidePanelAlphaBar.Value / 255f);
+                PanelUI.instance.UpdateColors();
+                PanelUI.SaveChanges();
+            };
+            this.Controls.Add(sidePanelAlphaBar);
+
+            this.Controls.Add(sidePanelBGBtn);
+
+            Button settingsBGBtn = new Button() { Text = "Settings BG", BackColor = PanelUI.Settings.SettingsBG, Width = 170, Top = 280, Left = (this.Width - 170) / 2, FlatStyle = FlatStyle.Flat, Height = 30 };
+            settingsBGBtn.Click += (s, e) =>
+            {
+                var cd = new ColorDialog() { Color = PanelUI.Settings.SettingsBG };
+
+                if (cd.ShowDialog() == DialogResult.OK)
+                {
+                    PanelUI.Settings.SettingsBG = cd.Color;
+                    PanelUI.SaveChanges();
+                    settingsBGBtn.BackColor = cd.Color;
+                    this.BackColor = cd.Color;
+                }
+            };
+
+
+
+            TrackBar settingsAlphaBar = new TrackBar() { Width = 170, Maximum = 255, Minimum = 1, Left = (this.Width - 170) / 2, Top = 320, Value = (int)(PanelUI.Settings.SettingsAlpha * 255) };
+            settingsAlphaBar.ValueChanged += (s, e) =>
+            {
+                PanelUI.Settings.SettingsAlpha = (settingsAlphaBar.Value / 255f);
+                this.Opacity = PanelUI.Settings.SettingsAlpha;
+                PanelUI.SaveChanges();
+            };
+            this.Controls.Add(settingsAlphaBar);
+
+            this.Controls.Add(settingsBGBtn);
         }
 
         public SettingsUI()
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
 
             this.SetStyle(ControlStyles.UserPaint, true);
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -117,49 +219,7 @@ namespace GhostWorkspace
                 }
             };
 
-            Label title = new Label() { Text = "Settings", Font = new Font("Bahnschrift SemiBold", 20F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))), Top = 10, Height = 40, Width = 130 };
-            title.Left = (this.Width - title.Width) / 2;
-            this.Controls.Add(title);
-
-            GroupBox ghostKeyBox = new GroupBox() { Text = "Ghosting Key Combo", Top = 60, Width = 170 };
-            ghostKeyBox.Left = (this.Width - ghostKeyBox.Width) / 2;
-
-            Label ghostKeyLabel = new Label() { Text = "Key:", Top = 22, Left = 10, Width = 30 };
-            ghostKeyBox.Controls.Add(ghostKeyLabel);
-            Button ghostKeyInput = new Button() { Text = PanelUI.Settings.GhostKey + "", Top = 20, Left = 60 };
-            ghostKeyInput.Click += (s, e) =>
-            {
-                if (this.waitingForKey)
-                    return;
-
-                this.waitingForKey = true;
-
-                ghostKeyInput.Text = "...";
-            };
-            ghostKeyBox.Controls.Add(ghostKeyInput);
-
-            this.ghostShiftCheck = new CheckBox() { Text = "Shift", Top = 50, Left = 10, Width = 50 };
-            this.ghostCtrlCheck = new CheckBox() { Text = "Ctrl", Top = 50, Left = 70, Width = 50 };
-            this.ghostAltCheck = new CheckBox() { Text = "Alt", Top = 50, Left = 120, Width = 40 };
-
-            ghostKeyBox.Controls.Add(this.ghostShiftCheck);
-            ghostKeyBox.Controls.Add(this.ghostCtrlCheck);
-            ghostKeyBox.Controls.Add(this.ghostAltCheck);
-
-            this.Controls.Add(ghostKeyBox);
-
-            ghostKeyInput.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
-            ghostKeyBox.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
-            this.KeyDown += (s, e) => CheckForKey(e, ghostKeyInput);
-
-            title.MouseDown += (s, e) =>
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    ReleaseCapture();
-                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-                }
-            };
+            this.AddComponents();
         }
     }
 }

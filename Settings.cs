@@ -12,7 +12,7 @@ namespace GhostWorkspace
         public bool GhostShift = false;
         public bool GhostCtrl = false;
         public bool GhostAlt = true;
-        public char GhostKey = 'h';
+        public char GhostKey = 'H';
 
         public Color SidePanelBG = Color.OrangeRed;
         public float SidePanelAlpha = .90f;

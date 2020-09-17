@@ -22,8 +22,46 @@ namespace GhostWorkspace
         [DllImport("user32.dll")]
         public static extern bool ReleaseCapture();
 
+        private void AddComponents()
+        {
+            this.Controls.Clear();
+            Label title = new Label() { Text = "Add an App", Font = new Font("Bahnschrift SemiBold", 20F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))), Top = 10, Height = 40, Width = 180 };
+            title.Left = (this.Width - title.Width) / 2;
+            title.MouseDown += (s, e) =>
+            {
+                if (e.Button == MouseButtons.Left)
+                {
+                    ReleaseCapture();
+                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
+                }
+            };
+            this.Controls.Add(title);
+
+            Button selectAppBtn = new Button() { Text = "Select an Application", Width = this.Width / 2, FlatStyle = FlatStyle.Flat, Left = this.Width / 4, Height = this.Height / 5, Top = (this.Height - this.Height / 5) / 2, Font = new Font("Bahnschrift SemiBold", 15F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
+            selectAppBtn.Click += (s, e) =>
+            {
+                var ofd = new OpenFileDialog() { Title = "Select an Application" };
+
+                if (ofd.ShowDialog() == DialogResult.OK)
+                    PanelUI.instance.AddApplication(ofd.FileName, true);
+
+                PanelUI.SaveChanges();
+            };
+
+            Button okBtn = new Button() { Text = "OK", Left = (this.Width - 100) / 2, Width = 100, Height = 30, Top = (this.Height - this.Height / 5) / 2 + 200, FlatStyle = FlatStyle.Flat, Font = new Font("Bahnschrift SemiBold", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
+            okBtn.Click += (s, e) => this.AnimatePopup(false);
+
+            this.Controls.Add(okBtn);
+            this.Controls.Add(selectAppBtn);
+        }
+
+        private void RemoveComponents() => this.Controls.Clear();
+
         private void AnimatePopup(bool visible)
         {
+            if (!visible)
+                this.BeginInvoke(new Action(() => this.RemoveComponents()));
+
             Task.Factory.StartNew(() =>
             {
                 Rectangle screen = Screen.PrimaryScreen.Bounds;
@@ -51,11 +89,15 @@ namespace GhostWorkspace
                 }
                 catch { }
             });
+
+            if (visible)
+                this.BeginInvoke(new Action(() => this.AddComponents()));
         }
 
         public AddAppUI()
         {
             InitializeComponent();
+            this.ShowInTaskbar = false;
 
             this.SetStyle(ControlStyles.UserPaint, true);
             this.SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
@@ -91,30 +133,6 @@ namespace GhostWorkspace
                     SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
                 }
             };
-
-            Label title = new Label() { Text = "Add an App", Font = new Font("Bahnschrift SemiBold", 20F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))), Top = 10, Height = 40, Width = 180 };
-            title.Left = (this.Width - title.Width) / 2;
-            title.MouseDown += (s, e) =>
-            {
-                if (e.Button == MouseButtons.Left)
-                {
-                    ReleaseCapture();
-                    SendMessage(Handle, WM_NCLBUTTONDOWN, HT_CAPTION, 0);
-                }
-            };
-            this.Controls.Add(title);
-
-            Button selectAppBtn = new Button() { Text = "Select an Application", Width = this.Width / 2, FlatStyle = FlatStyle.Flat, Left = this.Width / 4, Height = this.Height / 5, Top = (this.Height - this.Height / 5) / 2, Font = new Font("Bahnschrift SemiBold", 15F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
-            selectAppBtn.Click += (s, e) =>
-            {
-                var ofd = new OpenFileDialog() { Title = "Select an Application" };
-
-                if (ofd.ShowDialog() == DialogResult.OK)
-                    PanelUI.Applications.Add(ofd.FileName);
-
-                PanelUI.SaveChanges();
-            };
-            this.Controls.Add(selectAppBtn);
         }
     }
 }

@@ -24,6 +24,8 @@ namespace GhostWorkspace
 
         private SettingsUI settingsUI;
         private AddAppUI addAppUI;
+        private ProcessManager processManager;
+        private Task processManagerTask;
 
         private bool animating = false;
         private bool anIn = false;
@@ -31,17 +33,7 @@ namespace GhostWorkspace
 
         private Rectangle mainScreen = Screen.PrimaryScreen.Bounds;
 
-        /*
-        protected override CreateParams CreateParams
-        {
-            get
-            {
-                CreateParams cp = base.CreateParams;
-                cp.ExStyle |= 0x00000020; //WS_EX_TRANSPARENT
-                return cp;
-            }
-        }
-        */
+        public static PanelUI instance;
 
         public static void SaveChanges()
         {
@@ -57,7 +49,7 @@ namespace GhostWorkspace
 
         public void CheckSavings()
         {
-            if (!File.Exists("settigs.json"))
+            if (!File.Exists("settings.json"))
             {
                 var sw = new StreamWriter("settings.json");
                 var s = JsonSerializer.Create();
@@ -76,7 +68,7 @@ namespace GhostWorkspace
 
             sr = new StreamReader("applications.json");
             data = sr.ReadToEnd();
-            applications = JsonConvert.DeserializeObject<List<string>>(data);
+            Applications = JsonConvert.DeserializeObject<List<string>>(data);
             sr.Close();
         }
 
@@ -125,22 +117,88 @@ namespace GhostWorkspace
             }
         }
 
+        public void RemoveApplication(string app)
+        {
+            Applications.Remove(app);
+            
+            foreach (Control c in this.Controls)
+                if (c.Name == app)
+                    this.Controls.Remove(c);
+
+            this.Width = 100;
+            this.Height -= 95;
+            this.Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
+
+            SaveChanges();
+        }
+
+        public void AddApplication(string app, bool addToList)
+        {
+            if (addToList)
+                Applications.Add(app);
+
+            this.Width = 100;
+            this.Height += 95;
+            this.Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
+
+            int top = (Applications.Count + 1) * 95;
+            var icon = Icon.ExtractAssociatedIcon(app).ToBitmap();
+            Button btn = new Button() { Name = app, Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = top, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = icon };
+            btn.Click += (s, e) => ProcessManager.instance.HandleApp(app);
+            ContextMenu cm = new ContextMenu();
+            cm.MenuItems.Add("Remove");
+            cm.MenuItems[0].Click += (s, e) => RemoveApplication(app);
+            btn.ContextMenu = cm;
+            this.Controls.Add(btn);
+        }
+
+        protected override void WndProc(ref Message m)
+        {
+            if (m.Msg == 0x0312 && m.WParam.ToInt32() == 1)
+            {
+                this.Visible = this.processManager.ProcessesHidden;
+                
+                if (this.settingsUI.Visible)
+                    this.settingsUI.Visible = false;
+                if (this.addAppUI.Visible)
+                    this.addAppUI.Visible = false;
+
+                if (this.processManager.ProcessesHidden)
+                    this.processManager.ShowProcesses();
+                else
+                    this.processManager.HideProcesses();
+            }
+            base.WndProc(ref m);
+        }
+
+        public void UpdateColors()
+        {
+            this.BackColor = Settings.SidePanelBG;
+            this.Opacity = Settings.SidePanelAlpha;
+        }
+
         public PanelUI()
         {
+            instance = this;
+
             InitializeComponent();
+            this.ShowInTaskbar = false;
 
             Settings = new Settings();
             Applications = new List<string>();
 
+            InteropUtils.RegisterHotKey(this.Handle, 1, (Settings.GhostAlt ? 1 : 0) + (Settings.GhostCtrl ? 2 : 0) + (Settings.GhostShift ? 4 : 0), (int)Settings.GhostKey);
+
             this.settingsUI = new SettingsUI();
             this.addAppUI = new AddAppUI();
+            this.processManager = new ProcessManager();
 
             CheckSavings();
 
             this.FormBorderStyle = FormBorderStyle.None;
             
             this.Width = 100;
-            this.Height = (applications.Count + 2) * 95;
+            this.Height = 95 * 2;
             this.Top = (this.mainScreen.Height - this.Height) / 2;
             this.Left = 20;
             this.StartPosition = FormStartPosition.Manual;
@@ -174,6 +232,9 @@ namespace GhostWorkspace
             {
                 while (!this.IsDisposed)
                 {
+                    if (this.processManager.ProcessesHidden)
+                        continue;
+
                     POINT mousePos = new POINT();
                     InteropUtils.GetCursorPos(out mousePos);
                     int mouseX = mousePos.X;
@@ -185,7 +246,8 @@ namespace GhostWorkspace
                 }
             });
 
-            //AddApplications();
+            foreach (var app in Applications)
+                this.AddApplication(app, false);
         }
     }
 }

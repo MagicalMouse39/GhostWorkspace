@@ -42,5 +42,16 @@ namespace GhostWorkspace
         /// <returns></returns>
         [DllImport("user32.dll")]
         public static extern bool GetCursorPos(out POINT lpPoint);
+
+        [DllImport("user32.dll")]
+        public static extern bool RegisterHotKey(IntPtr hWnd, int id, int fsModifiers, int vlc);
+        [DllImport("user32.dll")]
+        public static extern bool UnregisterHotKey(IntPtr hWnd, int id);
+
+        [DllImport("user32.dll")]
+        public static extern int ShowWindow(int hwnd, int nCmdShow);
+
+        [DllImport("user32.DLL")]
+        public static extern bool SetForegroundWindow(IntPtr hWnd);
     }
 }
