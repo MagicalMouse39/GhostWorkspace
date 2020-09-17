@@ -217,6 +217,9 @@ namespace GhostWorkspace
             };
             Button addAppButton = new Button() { Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = 100, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.PlusIcon };
             addAppButton.Click += (s, e) => addAppUI.ShowDialog();
+            Button exitButton = new Button() { Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = 190, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = Resources.ExitIcon };
+            exitButton.Click += (s, e) => this.Close();
+            this.Controls.Add(exitButton);
             this.Controls.Add(settingsButton);
             this.Controls.Add(addAppButton);
             #endregion
@@ -226,7 +229,13 @@ namespace GhostWorkspace
             this.SetStyle(ControlStyles.AllPaintingInWmPaint, true);
 
             this.Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
-            
+
+            this.FormClosing += (s, e) =>
+            {
+                if (Settings.CloseProcessesAtExit)
+                    this.processManager.ClearProcesses();
+            };
+
             //Mouse detection for panel show
             Task.Factory.StartNew(() =>
             {

@@ -32,15 +32,13 @@ namespace GhostWorkspace
 
             foreach (var p in testProc)
                 InteropUtils.SetForegroundWindow(p.MainWindowHandle);
-            
+
             if (testProc.Count() <= 0)
                 processes.Add(Process.Start(path));
         }
 
-        public void HideProcesses()
+        public void UpdateProcs()
         {
-            this.ProcessesHidden = true;
-
             HashSet<Process> oldProcs = new HashSet<Process>(processes);
 
             foreach (var p in oldProcs)
@@ -52,6 +50,13 @@ namespace GhostWorkspace
                     if (!processes.Contains(pr))
                         processes.Add(pr);
             }
+        }
+
+        public void HideProcesses()
+        {
+            this.ProcessesHidden = true;
+
+            this.UpdateProcs();
 
             foreach (var p in processes)
                 if (!p.HasExited)
@@ -65,6 +70,18 @@ namespace GhostWorkspace
             foreach (var p in processes)
                 if (!p.HasExited)
                     InteropUtils.ShowWindow(p.MainWindowHandle.ToInt32(), SW_SHOW);
+        }
+
+        public void ClearProcesses()
+        {
+            this.UpdateProcs();
+
+            try
+            {
+                foreach (var p in processes)
+                    p.Kill();
+            }
+            catch { }
         }
 
         public ProcessManager()

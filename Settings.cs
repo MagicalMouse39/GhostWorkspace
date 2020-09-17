@@ -14,6 +14,8 @@ namespace GhostWorkspace
         public bool GhostAlt = true;
         public char GhostKey = 'H';
 
+        public bool CloseProcessesAtExit = false;
+
         public Color SidePanelBG = Color.OrangeRed;
         public float SidePanelAlpha = .90f;
 

@@ -109,6 +109,24 @@ namespace GhostWorkspace
             this.ghostCtrlCheck = new CheckBox() { Text = "Ctrl", Top = 50, Left = 70, Width = 50, Checked = PanelUI.Settings.GhostCtrl };
             this.ghostAltCheck = new CheckBox() { Text = "Alt", Top = 50, Left = 120, Width = 40, Checked = PanelUI.Settings.GhostAlt };
 
+            this.ghostShiftCheck.CheckedChanged += (s, e) =>
+            {
+                PanelUI.Settings.GhostShift = this.ghostShiftCheck.Checked;
+                PanelUI.SaveChanges();
+            };
+            
+            this.ghostCtrlCheck.CheckedChanged += (s, e) =>
+            {
+                PanelUI.Settings.GhostCtrl = this.ghostCtrlCheck.Checked;
+                PanelUI.SaveChanges();
+            };
+
+            this.ghostAltCheck.CheckedChanged += (s, e) =>
+            {
+                PanelUI.Settings.GhostAlt = this.ghostAltCheck.Checked;
+                PanelUI.SaveChanges();
+            };
+
             ghostKeyBox.Controls.Add(this.ghostShiftCheck);
             ghostKeyBox.Controls.Add(this.ghostCtrlCheck);
             ghostKeyBox.Controls.Add(this.ghostAltCheck);
@@ -153,7 +171,7 @@ namespace GhostWorkspace
 
             this.Controls.Add(sidePanelBGBtn);
 
-            Button settingsBGBtn = new Button() { Text = "Settings BG", BackColor = PanelUI.Settings.SettingsBG, Width = 170, Top = 280, Left = (this.Width - 170) / 2, FlatStyle = FlatStyle.Flat, Height = 30 };
+            Button settingsBGBtn = new Button() { Text = "Settings BG", BackColor = PanelUI.Settings.SettingsBG, Width = 170, Top = 270, Left = (this.Width - 170) / 2, FlatStyle = FlatStyle.Flat, Height = 30 };
             settingsBGBtn.Click += (s, e) =>
             {
                 var cd = new ColorDialog() { Color = PanelUI.Settings.SettingsBG };
@@ -167,9 +185,7 @@ namespace GhostWorkspace
                 }
             };
 
-
-
-            TrackBar settingsAlphaBar = new TrackBar() { Width = 170, Maximum = 255, Minimum = 1, Left = (this.Width - 170) / 2, Top = 320, Value = (int)(PanelUI.Settings.SettingsAlpha * 255) };
+            TrackBar settingsAlphaBar = new TrackBar() { Width = 170, Maximum = 255, Minimum = 1, Left = (this.Width - 170) / 2, Top = 310, Value = (int)(PanelUI.Settings.SettingsAlpha * 255) };
             settingsAlphaBar.ValueChanged += (s, e) =>
             {
                 PanelUI.Settings.SettingsAlpha = (settingsAlphaBar.Value / 255f);
@@ -179,6 +195,14 @@ namespace GhostWorkspace
             this.Controls.Add(settingsAlphaBar);
 
             this.Controls.Add(settingsBGBtn);
+
+            CheckBox killProcsAtExit = new CheckBox() { Text = "Kill processes at Exit", Width = 125, Left = (this.Width - 120) / 2, Top = 350, Checked = PanelUI.Settings.CloseProcessesAtExit };
+            killProcsAtExit.CheckedChanged += (s, e) =>
+            {
+                PanelUI.Settings.CloseProcessesAtExit = killProcsAtExit.Checked;
+                PanelUI.SaveChanges();
+            };
+            this.Controls.Add(killProcsAtExit);
         }
 
         public SettingsUI()
