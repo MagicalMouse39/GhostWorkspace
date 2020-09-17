@@ -141,7 +141,7 @@ namespace GhostWorkspace
             this.Height += 95;
             this.Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, this.Width, this.Height, 20, 20));
 
-            int top = (Applications.Count + 1) * 95;
+            int top = (Applications.Count + 2) * 95;
             var icon = Icon.ExtractAssociatedIcon(app).ToBitmap();
             Button btn = new Button() { Name = app, Width = 80, Height = 80, ForeColor = Color.White, Region = Region.FromHrgn(InteropUtils.CreateRoundRectRgn(0, 0, 80, 80, 20, 20)), Left = 10, Top = top, FlatStyle = FlatStyle.Flat, BackColor = Color.FromArgb(255, 50, 151, 168), BackgroundImageLayout = ImageLayout.Stretch, BackgroundImage = icon };
             btn.Click += (s, e) => ProcessManager.instance.HandleApp(app);
@@ -198,7 +198,7 @@ namespace GhostWorkspace
             this.FormBorderStyle = FormBorderStyle.None;
             
             this.Width = 100;
-            this.Height = 95 * 2;
+            this.Height = 95 * 3;
             this.Top = (this.mainScreen.Height - this.Height) / 2;
             this.Left = 20;
             this.StartPosition = FormStartPosition.Manual;
