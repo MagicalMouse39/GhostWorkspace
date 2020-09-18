@@ -48,7 +48,7 @@ namespace GhostWorkspace
 
         public void CheckSavings()
         {
-            if (!File.Exists("settings.json"))
+            if (!File.Exists("settings.json") || !File.Exists("applications.json"))
             {
                 var sw = new StreamWriter("settings.json");
                 var s = JsonSerializer.Create();
