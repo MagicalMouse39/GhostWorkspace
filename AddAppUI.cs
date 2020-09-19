@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -37,7 +38,7 @@ namespace GhostWorkspace
             };
             this.Controls.Add(title);
 
-            Button selectAppBtn = new Button() { Text = "Select an Application", Width = this.Width / 2, FlatStyle = FlatStyle.Flat, Left = this.Width / 4, Height = this.Height / 5, Top = (this.Height - this.Height / 5) / 2, Font = new Font("Bahnschrift SemiBold", 15F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
+            Button selectAppBtn = new Button() { Text = "Select an Application", Width = this.Width / 2, FlatStyle = FlatStyle.Flat, Left = this.Width / 4, Height = this.Height / 5, Top = (this.Height - this.Height / 5) / 2 - 50, Font = new Font("Bahnschrift SemiBold", 15F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
             selectAppBtn.Click += (s, e) =>
             {
                 var ofd = new OpenFileDialog() { Title = "Select an Application" };
@@ -47,6 +48,17 @@ namespace GhostWorkspace
 
                 PanelUI.SaveChanges();
             };
+           
+            Button selectProcBtn = new Button() { Text = "Select a Process", Width = this.Width / 2, FlatStyle = FlatStyle.Flat, Left = Width / 4, Height = this.Height / 5, Top = this.Height - this.Height / 3 - 70, Font = new Font("Bahnschrift SemiBold", 15F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
+            selectProcBtn.Click += (s, e) =>
+            {
+                var ui = new SelectProcessUI();
+
+                if (ui.ShowDialog() == DialogResult.OK)
+                    foreach (var proc in ui.SelectedProcesses)
+                        ProcessManager.processes.Add(proc);
+            };
+            this.Controls.Add(selectProcBtn);
 
             Button okBtn = new Button() { Text = "OK", Left = (this.Width - 100) / 2, Width = 100, Height = 30, Top = (this.Height - this.Height / 5) / 2 + 200, FlatStyle = FlatStyle.Flat, Font = new Font("Bahnschrift SemiBold", 10F, FontStyle.Regular, GraphicsUnit.Point, ((byte)(0))) };
             okBtn.Click += (s, e) => this.AnimatePopup(false);
@@ -86,12 +98,12 @@ namespace GhostWorkspace
                 {
                     if (!visible)
                         this.BeginInvoke(new Action(() => this.Visible = false));
+                    else
+                        this.BeginInvoke(new Action(() => this.AddComponents()));
                 }
+
                 catch { }
             });
-
-            if (visible)
-                this.BeginInvoke(new Action(() => this.AddComponents()));
         }
 
         public AddAppUI()

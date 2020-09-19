@@ -61,6 +61,12 @@
     </Compile>
     <Compile Include="InteropUtils.cs" />
     <Compile Include="ProcessManager.cs" />
+    <Compile Include="SelectProcessUI.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SelectProcessUI.Designer.cs">
+      <DependentUpon>SelectProcessUI.cs</DependentUpon>
+    </Compile>
     <Compile Include="Settings.cs" />
     <Compile Include="SettingsUI.cs">
       <SubType>Form</SubType>
@@ -128,7 +134,6 @@
     <None Include="buttons\MaximizeBtnIcon.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Ghost.ico" />
     <Content Include="OrangeGhost.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
