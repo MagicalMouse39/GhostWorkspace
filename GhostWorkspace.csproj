@@ -25,7 +25,7 @@
     <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
+    <PlatformTarget>x64</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -97,6 +97,9 @@
     </Compile>
     <EmbeddedResource Include="PanelUI.resx">
       <DependentUpon>PanelUI.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SelectProcessUI.resx">
+      <DependentUpon>SelectProcessUI.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SettingsUI.resx">
       <DependentUpon>SettingsUI.cs</DependentUpon>
