@@ -44,9 +44,9 @@ namespace GhostWorkspace
 
         private void RecalculateProcesses(string searchData)
         {
-            this.lv.Items.Clear();
             Task.Factory.StartNew(() =>
             {
+                this.BeginInvoke(new Action(() => { this.lv.Items.Clear(); }));
                 var imgL = new ImageList();
 
                 lv.LargeImageList = imgL;
@@ -57,9 +57,12 @@ namespace GhostWorkspace
                     if (!proc.ProcessName.ToLower().Contains(searchData.ToLower()))
                         continue;
 
-                    imgL.Images.Add(proc.MainModule.FileName, Icon.ExtractAssociatedIcon(proc.MainModule.FileName));
-                    var lvi = lv.Items.Add(proc.ProcessName);
-                    lvi.ImageKey = proc.MainModule.FileName;
+                    this.BeginInvoke(new Action(() =>
+                    {
+                        imgL.Images.Add(proc.MainModule.FileName, Icon.ExtractAssociatedIcon(proc.MainModule.FileName));
+                        var lvi = lv.Items.Add(proc.ProcessName);
+                        lvi.ImageKey = proc.MainModule.FileName;
+                    }));
                 }
             });
         }
